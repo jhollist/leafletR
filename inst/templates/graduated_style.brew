@@ -1,0 +1,30 @@
+<%# 
+    GRADUATED STYLE
+-%>
+		function getValue(x) {
+<%			for(j in 1:length(style[[n]][[1]])) { -%>
+			<%= style[[n]][[1]][j] %>
+<%			} -%>
+		}			
+		function style<%= n %>(feature) {
+			return {
+<%			if(is.null(style[[n]][[2]])) {
+				if(attr(style[[n]], "style.par")=="col") { -%>
+				"color": getValue(feature.properties["<%= attr(style[[n]], "property") %>"]),
+<%				} else if(attr(style[[n]], "style.par")=="rad") {-%>
+				"radius": getValue(feature.properties["<%= attr(style[[n]], "property") %>"]),
+<%				}
+			} else {
+				if(attr(style[[n]], "style.par")=="col") {
+					if(any(grepl("color", paste(style[[n]][[2]]), fixed=TRUE)==TRUE)) { -%>
+				"fillColor": getValue(feature.properties["<%= attr(style[[n]], "property") %>"]),
+<%					} else { -%>
+				"color": getValue(feature.properties["<%= attr(style[[n]], "property") %>"]),
+<%					}
+				} else if(attr(style[[n]], "style.par")=="rad") { -%>
+				"radius": getValue(feature.properties["<%= attr(style[[n]], "property") %>"]),
+<%				} %>
+				<%= paste(style[[n]][[2]], collapse=", ") %>
+<%			} -%>
+			};
+		}

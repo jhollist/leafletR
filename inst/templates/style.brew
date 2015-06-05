@@ -1,92 +1,20 @@
-
 		// styling
-<%# 
-    STYLE LIST (MULTI SINGLE STYLE)
--%>
-<%	if(any(class(style)=="list")) {
-		for(n in 1:length(style)) {
-			if(any(!is.na(style[[n]]))) { 
-				if(!is.null(attr(style[[n]], "marker"))) { -%>
-		var style<%= n %> = L.MakiMarkers.icon({<%= style[[n]] %>});
-<%				} else { -%>
-		var style<%= n %> = {<%= paste(style[[n]], collapse = ", ") %>};
-<%				}
-			}
-		}
-	} else { -%>
-<%# 
-    SINGLE STYLE
--%>
-<%		if(attr(style, "style.type")=="single") { 
-			if(!is.null(attr(style, "marker"))) { -%>
-		var style1 = L.MakiMarkers.icon({<%= style %>});
-<%			} else { -%>
-		var style1 = {<%= paste(style, collapse =", ") %>};
-<%			}
-		} -%>
-<%# 
-    GRADUATED STYLE
--%>
-<%		if(attr(style, "style.type")=="graduated") { -%>
-		function getValue(x) {
-<%			for(n in 1:length(style[[1]])) { -%>
-			<%= style[[1]][n] %>
-<%			} -%>
-		}			
-		function style1(feature) {
-			return {
-<%			if(is.null(style[[2]])) {
-				if(attr(style, "style.par")=="col") { -%>
-				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				} else if(attr(style, "style.par")=="rad") {-%>
-				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				}
-			} else {
-				if(attr(style, "style.par")=="col") {
-					if(any(grepl("color", paste(style[[2]]), fixed=TRUE)==TRUE)) { -%>
-				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%					} else { -%>
-				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%					}
-				} else if(attr(style, "style.par")=="rad") { -%>
-				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				} %>
-				<%= paste(style[[2]], collapse=", ") %>
-<%			} -%>
-			};
-		}
-<%		} -%>
-<%# 
-    CATEGORIZED STYLE
--%>
-<%		if(attr(style, "style.type")=="categorized") { -%>
-		function getValue(x) {
-<%			for(n in 1:length(style[[1]])) { -%>
-			<%= style[[1]][n] %>
-<%			} -%>
-		}
-					
-		function style1(feature) {
-			return {
-<%			if(is.null(style[[2]])) {
-				if(attr(style, "style.par")=="col") { -%>
-				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				} else if(attr(style, "style.par")=="rad") {-%>
-				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				}
-			} else {
-				if(attr(style, "style.par")=="col") {
-					if(any(grepl("color", paste(style[[2]]), fixed=TRUE)==TRUE)) { -%>
-				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%					} else { -%>
-				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%					}
-				} else if(attr(style, "style.par")=="rad") { -%>
-				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
-<%				} -%>
-				<%= paste(style[[2]], collapse=", ") %>
-<%			} -%>
-			};
-		}
-<%		} -%>
-<%	} -%>
+<% # STYLE LIST (MULTI SINGLE STYLE)%>
+<%  if(any(class(style)!="list")){style<-list(style)} %>
+<%	if(any(class(style)=="list")) { %>
+<%		for(n in 1:length(style)) { %>
+<%			if(any(!is.na(style[[n]]))) { %>
+<%        # BUILD STYLES %>
+<%        if(attr(style[[n]], "style.type")=="single"){ %>
+<%          brew(system.file("templates/single_style.brew", package = "leafletR")) %>
+<%        } %>
+<%        if(attr(style[[n]], "style.type")=="graduated"){ %>
+<%          brew(system.file("templates/graduated_style.brew", package = "leafletR")) %>
+<%        } %>
+<%        if(attr(style[[n]], "style.type")=="categorized"){ %>
+<%          brew(system.file("templates/categorized_style.brew", package = "leafletR")) %>	
+<%        } %>
+<%			}%>
+<%		}%>
+<% } %>
+

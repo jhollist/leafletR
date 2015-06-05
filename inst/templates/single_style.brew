@@ -1,0 +1,9 @@
+<%# 
+    SINGLE STYLE
+-%>
+<%	if(!is.null(attr(style[[n]], "marker"))) { -%>
+		var style<%= n %> = L.MakiMarkers.icon({<%= style[[n]] %>});
+<%	} else { -%>
+		var style<%= n %> = {<%= paste(style[[n]], collapse =", ") %>};
+<%	} %>
+
